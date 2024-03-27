@@ -16,16 +16,28 @@ function unlimitedGifRepetitions(path) {
   return data;
 }
 
+function modifyGif(path) {
+  try {
+    const modifiedData = unlimitedGifRepetitions(path);
+    fs.writeFileSync(path, modifiedData);
+    console.log(`${path} loop count changed`);
+  } catch (error) {
+    console.error(`Error modifying ${path}:`, error);
+  }
+}
+
 function pngToGif(path){
   try {
     const outputPath = `${path.replace('.png', '')}.gif`;
     apng2gif(path, outputPath)
       .then(() => {
         console.log(`APNG to GIF conversion successful: ${path} => ${outputPath}`);
+        modifyGif(outputPath);
       })
       .catch((error) => {
         console.error(`Error converting APNG to GIF: ${path}`, error);
       });
+
   } catch (error) {
     console.error(`Error converting APNG to GIF: ${path}`, error);
   }
@@ -46,15 +58,6 @@ function batchModifyGifFilesInDirectory(directoryPath) {
         pngToGif(filePath)
       }
 
-      // if (fileExtension === '.gif') {
-      //   try {
-      //     const modifiedData = unlimitedGifRepetitions(filePath);
-      //     fs.writeFileSync(filePath, modifiedData);
-      //     console.log(`Modified ${file} `);
-      //   } catch (error) {
-      //     console.error(`Error modifying ${file} :`, error);
-      //   }
-      // }
     });
   });
 }
