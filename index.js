@@ -21,6 +21,11 @@ function modifyGif(path) {
     const modifiedData = unlimitedGifRepetitions(path);
     fs.writeFileSync(path, modifiedData);
     console.log(`${path} loop count changed`);
+
+    const originalPath = path.replace('.gif', '.png');
+    fs.unlinkSync(originalPath);
+    console.log(`Removed original PNG file: ${originalPath}`);
+    console.log(); //add new line
   } catch (error) {
     console.error(`Error modifying ${path}:`, error);
   }
@@ -31,7 +36,7 @@ function pngToGif(path){
     const outputPath = `${path.replace('.png', '')}.gif`;
     apng2gif(path, outputPath)
       .then(() => {
-        console.log(`APNG to GIF conversion successful: ${path} => ${outputPath}`);
+        console.log(`APNG to GIF conversion successful => ${outputPath}`);
         modifyGif(outputPath);
       })
       .catch((error) => {
