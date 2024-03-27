@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const apng2gif = require('apng2gif');;
+const readline = require('node:readline');
 
 function unlimitedGifRepetitions(path) {
   const data = fs.readFileSync(path);
@@ -67,5 +68,18 @@ function batchModifyGifFilesInDirectory(directoryPath) {
   });
 }
 
-const directoryPath = 'C:/Users/ysli/Downloads/pingrayk/55765018';
-batchModifyGifFilesInDirectory(directoryPath);
+// const directoryPath = 'path';
+// batchModifyGifFilesInDirectory(directoryPath);
+
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+rl.question(`Input directoryPath?`, directoryPath => {
+  const modifiedPath = directoryPath.replace(/\\/g, '/');
+  console.log(`Inputted path => ${modifiedPath}`);
+  batchModifyGifFilesInDirectory(modifiedPath);
+  rl.close();
+});
