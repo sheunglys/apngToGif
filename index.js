@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const ffmpegStatic = require('ffmpeg-static');
-const ffmpeg = require('fluent-ffmpeg')
+const apng2gif = require('apng2gif');;
 
 function unlimitedGifRepetitions(path) {
   const data = fs.readFileSync(path);
@@ -18,12 +17,18 @@ function unlimitedGifRepetitions(path) {
 }
 
 function pngToGif(path){
-    try{
-        ffmpeg(path).format('gif')
-        console.log(`png to gif ${file} `);
-    }catch (error){
-        console.error(`Error png to gif ${file} :`, error);
-    }
+  try {
+    const outputPath = `${path.replace('.png', '')}.gif`;
+    apng2gif(path, outputPath)
+      .then(() => {
+        console.log(`APNG to GIF conversion successful: ${path} => ${outputPath}`);
+      })
+      .catch((error) => {
+        console.error(`Error converting APNG to GIF: ${path}`, error);
+      });
+  } catch (error) {
+    console.error(`Error converting APNG to GIF: ${path}`, error);
+  }
 }
 
 function batchModifyGifFilesInDirectory(directoryPath) {
@@ -41,15 +46,15 @@ function batchModifyGifFilesInDirectory(directoryPath) {
         pngToGif(filePath)
       }
 
-      if (fileExtension === '.gif') {
-        try {
-          const modifiedData = unlimitedGifRepetitions(filePath);
-          fs.writeFileSync(filePath, modifiedData);
-          console.log(`Modified ${file} `);
-        } catch (error) {
-          console.error(`Error modifying ${file} :`, error);
-        }
-      }
+      // if (fileExtension === '.gif') {
+      //   try {
+      //     const modifiedData = unlimitedGifRepetitions(filePath);
+      //     fs.writeFileSync(filePath, modifiedData);
+      //     console.log(`Modified ${file} `);
+      //   } catch (error) {
+      //     console.error(`Error modifying ${file} :`, error);
+      //   }
+      // }
     });
   });
 }
